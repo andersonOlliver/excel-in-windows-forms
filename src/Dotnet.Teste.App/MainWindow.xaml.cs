@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dotnet.Teste.App.Http;
 using Dotnet.Teste.App.Util;
+using Dotnet.Teste.Core.Entity;
 using Dotnet.Teste.Core.Service;
 
 namespace Dotnet.Teste.App
@@ -37,6 +38,17 @@ namespace Dotnet.Teste.App
         {
             var result = _client.GetOperations();
             operacoesDG.ItemsSource = result;
+        }
+
+        private void Ativo_Click(object sender, RoutedEventArgs e)
+        {
+            var result = _client.GetOperations(FilterType.ATIVO);
+            operacoesDG.ItemsSource = result;
+        }
+
+        private void Todos_Click(object sender, RoutedEventArgs e)
+        {
+            Init();
         }
 
         //

@@ -13,7 +13,7 @@ namespace Dotnet.Teste.Api.Controllers
 {
     public class DataController : ApiController
     {
-        // private readonly OperationRepository _repository = new OperationRepository();
+        private readonly OperationRepository _repository = new OperationRepository();
         private readonly DataService _service = new DataService();
 
         public async Task<HttpResponseMessage> GetAll()
@@ -30,5 +30,18 @@ namespace Dotnet.Teste.Api.Controllers
             }
         }
 
+        public HttpResponseMessage GetAll([FromUri] FilterType type)
+        {
+            try
+            {
+                var result = _repository.GroupedBy(type);
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, e);
+            }
+        }
     }
 }

@@ -13,7 +13,13 @@ namespace Dotnet.Teste.App.Http
             var response = client.Execute<List<Operation>>(new RestRequest());
             return response.Data;
         }
-
-
+        public List<FilteredDto> GetOperations(FilterType type, string url = Path)
+        {
+            var client = new RestClient(url);
+            client.AddDefaultUrlSegment("type", type.ToString());
+            var response = client.Execute<List<FilteredDto>>(new RestRequest());
+            return response.Data;
+        }
+        
     }
 }

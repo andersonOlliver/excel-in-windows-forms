@@ -39,7 +39,7 @@ namespace Dotnet.Teste.Core.Util
         }
         public OperationBuilder Preco(double preco)
         {
-            _operation.Preco = preco;
+            _operation.Preco = Math.Round(preco, 2);
             return this;
         }
         public OperationBuilder Conta(int conta)

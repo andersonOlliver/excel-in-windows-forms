@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\FilteredDto.cs" />
+    <Compile Include="Entity\FilterType.cs" />
     <Compile Include="Entity\Operation.cs" />
     <Compile Include="Entity\TypeOperation.cs" />
     <Compile Include="Infra\FileData.cs" />

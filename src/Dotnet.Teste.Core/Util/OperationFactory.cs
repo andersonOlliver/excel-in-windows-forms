@@ -29,11 +29,11 @@ namespace Dotnet.Teste.Core.Util
             return new OperationBuilder()
                 .Id(id)
                 .DateTime(_random.RandomDateTime())
-                .TipoOperacao(TypeOperation.COMPRA)
-                .Ativo($"{_random.RandomString(3)}{_random.RandomNumber(1, 9)}")
+                .TipoOperacao(DateTime.Now.Millisecond % 2 == 0 ? TypeOperation.COMPRA : TypeOperation.VENDA)
+                .Ativo($"ABC{_random.RandomString(1)}{_random.RandomNumber(1, 9)}")
                 .Quantidade(_random.RandomNumber(999, 9999))
                 .Preco(_random.RandomNumber(1.0, 100.0))
-                .Conta(_random.RandomNumber(1111, 9999))
+                .Conta(_random.RandomNumber(9000, 9999))
                 .Build();
         }
     }

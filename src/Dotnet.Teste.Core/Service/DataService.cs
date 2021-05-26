@@ -30,14 +30,18 @@ namespace Dotnet.Teste.Core.Service
         {
             if (!_fileData.NotExist) return null;
 
+            DateTime inicio = DateTime.Now;
+            
             var tasks = Enumerable.Range(0, size).ToList().Select(i =>
                 Task.Factory.StartNew(() =>
                 {
                     var data = _factory.CreateOperation(i);
-                    Debug.Print(data.ToString());
+                    // Debug.Print(data.ToString());
                     
                     return data;
                 }));
+            var fim = DateTime.Now;
+            Debug.Print($"Finalizada a sincronização, duração {fim - inicio}");
 
             var resultado = await Task.WhenAll(tasks);
 
@@ -55,7 +59,7 @@ namespace Dotnet.Teste.Core.Service
                 {
                     ct.ThrowIfCancellationRequested();
                     var data = _factory.CreateOperation(i);
-                    Debug.Print(data.ToString());
+                    // Debug.Print(data.ToString());
                     
                     reportadorDeProgresso.Report(data.ToString());
                     ct.ThrowIfCancellationRequested();
