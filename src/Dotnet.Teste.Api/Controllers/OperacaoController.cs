@@ -5,17 +5,26 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 using Dotnet.Teste.Core.Entity;
 using Dotnet.Teste.Core.Repository;
 using Dotnet.Teste.Core.Service;
+using WebApi.OutputCache.V2;
 
 namespace Dotnet.Teste.Api.Controllers
 {
-    public class DataController : ApiController
+    /// <summary>
+    /// 
+    /// </summary>
+    [RoutePrefix("api/operacao")]
+    // [CacheOutput(ClientTimeSpan = 50, ServerTimeSpan = 50)]
+    public class OperacaoController : ApiController
     {
         private readonly OperationRepository _repository = new OperationRepository();
         private readonly DataService _service = new DataService();
 
+        [Route("")]
+        [ResponseType(typeof(List<Operation>))]
         public async Task<HttpResponseMessage> GetAll()
         {
             try
@@ -30,7 +39,9 @@ namespace Dotnet.Teste.Api.Controllers
             }
         }
 
-        public HttpResponseMessage GetAll([FromUri] FilterType type)
+        [Route("{type:int}")]
+        [ResponseType(typeof(FilteredDto))]
+        public HttpResponseMessage GetGrouped(FilterType type)
         {
             try
             {
