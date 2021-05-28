@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Dotnet.Teste.Core.Entity;
+using Dotnet.Teste.Core.Repository;
+using Dotnet.Teste.Core.Service;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Dotnet.Teste.Core.Entity;
-using Dotnet.Teste.Core.Repository;
-using Dotnet.Teste.Core.Service;
-using WebApi.OutputCache.V2;
 
 namespace Dotnet.Teste.Api.Controllers
 {
@@ -20,8 +18,14 @@ namespace Dotnet.Teste.Api.Controllers
     // [CacheOutput(ClientTimeSpan = 50, ServerTimeSpan = 50)]
     public class OperacaoController : ApiController
     {
-        private readonly OperationRepository _repository = new OperationRepository();
-        private readonly DataService _service = new DataService();
+        private readonly IOperationRepository _repository;
+        private readonly IOperationService _service;
+
+        public OperacaoController(IOperationRepository repository, IOperationService service)
+        {
+            _repository = repository;
+            _service = service;
+        }
 
         [Route("")]
         [ResponseType(typeof(List<Operation>))]
@@ -39,14 +43,19 @@ namespace Dotnet.Teste.Api.Controllers
             }
         }
 
-        [Route("{type:int}")]
-        [ResponseType(typeof(FilteredDto))]
-        public HttpResponseMessage GetGrouped(FilterType type)
+        [Route("{type}")]
+        [ResponseType(typeof(Grouped))]
+        public HttpResponseMessage GetGrouped(string type)
         {
             try
             {
-                var result = _repository.GroupedBy(type);
-                return Request.CreateResponse(HttpStatusCode.OK, result);
+                if (Enum.TryParse<FilterType>(type, true, out var parsed))
+                {
+                    var result = _repository.GroupedBy(parsed);
+                    return Request.CreateResponse(HttpStatusCode.OK, result);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.NotFound);
             }
             catch (Exception e)
             {

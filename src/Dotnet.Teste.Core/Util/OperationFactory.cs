@@ -1,28 +1,16 @@
 ﻿using Dotnet.Teste.Core.Entity;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Dotnet.Teste.Core.Util
 {
     public class OperationFactory
     {
-        private readonly OperationBuilder _builder = new OperationBuilder();
-        private readonly RandomGenerator _random = new RandomGenerator();
+        private readonly RandomGenerator _random;
 
-        // public List<Operation> GenerateData(int size = 10)
-        // {
-        //     var random = new Random();
-        //     var operations = Enumerable.Range(0, size)
-        //         .OrderBy(t => random.Next())
-        //         .Select(i => BuildOperation(i))
-        //         .ToList();
-        //
-        //     operations.ForEach(i => Debug.Print("Valor = " + i));
-        //     return operations;
-        // }
-
+        public OperationFactory(RandomGenerator random)
+        {
+            _random = random;
+        }
 
         public Operation CreateOperation(long id)
         {

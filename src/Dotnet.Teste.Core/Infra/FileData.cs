@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Dotnet.Teste.Core.Infra
 {
-    public class FileData
+    public class FileData : IFileData
     {
         private const string Path = @"C:\gft\path.json";
 

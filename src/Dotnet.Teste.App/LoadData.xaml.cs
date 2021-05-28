@@ -21,7 +21,7 @@ namespace Dotnet.Teste.App
     /// </summary>
     public partial class LoadData : Window
     {
-        private readonly DataService _dataService = new DataService();
+        //private readonly OperationService _dataService = new OperationService();
         private CancellationTokenSource _cts;
         private const int Size = 20000;
 
@@ -48,10 +48,10 @@ namespace Dotnet.Teste.App
 
             try
             {
-                var resultado = await _dataService.Seed(_cts.Token, progress, Size);
+                //var resultado = await _dataService.Seed(_cts.Token, progress, Size);
 
-                var fim = DateTime.Now;
-                AtualizarView(resultado, fim - inicio);
+                //var fim = DateTime.Now;
+                //AtualizarView(resultado, fim - inicio);
             }
             catch (OperationCanceledException)
             {

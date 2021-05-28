@@ -1,23 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dotnet.Teste.App.Http;
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Dotnet.Teste.App.Http;
-using Dotnet.Teste.App.Util;
-using Dotnet.Teste.Core.Entity;
-using Dotnet.Teste.Core.Service;
+using MessageBox = System.Windows.MessageBox;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace Dotnet.Teste.App
 {
@@ -37,32 +24,70 @@ namespace Dotnet.Teste.App
         private void Init()
         {
             var result = _client.GetOperations();
+            operacoesDG.Columns.Clear();
             operacoesDG.ItemsSource = result;
         }
 
-        private void Ativo_Click(object sender, RoutedEventArgs e)
+
+        private void Agrupar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var result = _client.GetOperations(FilterType.ATIVO);
+            Debug.Print((sender as ComboBox)?.SelectedValue.ToString());
+            var result = _client.GetOperations((sender as ComboBox)?.SelectedValue.ToString());
+            operacoesDG.Columns.Clear();
             operacoesDG.ItemsSource = result;
         }
 
-        private void Todos_Click(object sender, RoutedEventArgs e)
+        private async void BaixarCSV_Click(object sender, RoutedEventArgs e)
         {
-            Init();
+            var groupBy = Agrupar.SelectedValue?.ToString() ?? "todos";
+            var exportDialog = new SaveFileDialog
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "CSV file (*.csv)|*.csv| All Files (*.*)|*.*",
+                FileName = "arquivo.csv"
+            };
+
+            if (exportDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    await _client.DownloadCsvAsync(groupBy, exportDialog.FileName);
+                    MessageBox.Show("Arquivo criado com sucesso!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Console.Write(ex);
+                }
+            }
+
         }
 
-        //
-        // private void Button_Click(object sender, RoutedEventArgs e)
-        // {
-        //     var progress = new SeedProgress();
-        //     _dataService.Seed();
-        // }
+        private async void BaixarExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var groupBy = Agrupar.SelectedValue?.ToString() ?? "todos";
+            var exportDialog = new SaveFileDialog
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Excel Worksheets|*.xls| All Files (*.*)|*.*",
+                FileName = $"{groupBy}.xls"
+            };
 
+            if (exportDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    await _client.DownloadExcelAsync(groupBy, exportDialog.FileName);
+                    MessageBox.Show("Arquivo criado com sucesso!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-        //
-        // private void BtnProcessar_Click(object sender, RoutedEventArgs e)
-        // {
-        //
-        // }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Console.Write(ex);
+                }
+            }
+        }
     }
 }

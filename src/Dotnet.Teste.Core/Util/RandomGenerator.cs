@@ -7,7 +7,7 @@ namespace Dotnet.Teste.Core.Util
     public class RandomGenerator
     {
         private readonly Random _random = new Random();
-        private readonly DateTime _start = new DateTime(1993, 1, 1);
+        private readonly DateTime _start = new DateTime(1993, 12, 5);
 
         // Reference: https://www.c-sharpcorner.com/article/generating-random-number-and-string-in-C-Sharp/  
         public int RandomNumber(int min, int max)

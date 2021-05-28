@@ -1,20 +1,28 @@
-﻿using System;
+﻿using Dotnet.Teste.Core.Entity;
+using Dotnet.Teste.Core.Infra;
+using Dotnet.Teste.Core.Repository;
+using Dotnet.Teste.Core.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dotnet.Teste.App.Util;
-using Dotnet.Teste.Core.Entity;
-using Dotnet.Teste.Core.Util;
-using Dotnet.Teste.Core.Infra;
 
 namespace Dotnet.Teste.Core.Service
 {
-    public class DataService
+    public class OperationService : IOperationService
     {
-        private readonly OperationFactory _factory = new OperationFactory();
-        private readonly FileData _fileData = new FileData();
+        private readonly OperationFactory _factory;
+        private readonly IFileData _fileData;
+        private readonly IOperationRepository _repository;
+
+        public OperationService(IOperationRepository repository, IFileData fileData, OperationFactory factory)
+        {
+            _repository = repository;
+            _fileData = fileData;
+            _factory = factory;
+        }
 
         public async Task<List<Operation>> GetAll()
         {
@@ -23,7 +31,21 @@ namespace Dotnet.Teste.Core.Service
                 return await Seed(20000);
             }
 
-            return _fileData.Read();
+            return _repository.List();
+        }
+
+        public string GetData(FilterType groupBy, string separator = ",")
+        {
+            if (groupBy == FilterType.TODOS)
+            {
+                var data = _repository.List();
+                return CsvUtil.ToCsv(data, separator);
+            }
+            else
+            {
+                var data = _repository.GroupedBy(groupBy);
+                return CsvUtil.ToCsv(data, separator);
+            }
         }
 
         public async Task<List<Operation>> Seed(int size = 100)
@@ -31,13 +53,13 @@ namespace Dotnet.Teste.Core.Service
             if (!_fileData.NotExist) return null;
 
             DateTime inicio = DateTime.Now;
-            
+
             var tasks = Enumerable.Range(0, size).ToList().Select(i =>
                 Task.Factory.StartNew(() =>
                 {
                     var data = _factory.CreateOperation(i);
                     // Debug.Print(data.ToString());
-                    
+
                     return data;
                 }));
             var fim = DateTime.Now;
@@ -58,9 +80,11 @@ namespace Dotnet.Teste.Core.Service
                 Task.Factory.StartNew(() =>
                 {
                     ct.ThrowIfCancellationRequested();
+
+
                     var data = _factory.CreateOperation(i);
                     // Debug.Print(data.ToString());
-                    
+
                     reportadorDeProgresso.Report(data.ToString());
                     ct.ThrowIfCancellationRequested();
 

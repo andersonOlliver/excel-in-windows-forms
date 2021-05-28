@@ -4,12 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dotnet.Teste.App"
+        xmlns:entity="clr-namespace:Dotnet.Teste.Core.Entity;assembly=Dotnet.Teste.Core"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid Name="operacoesDG" HorizontalAlignment="Left" Height="401" Margin="10,10,0,0" VerticalAlignment="Top" Width="774"/>
-        <!-- <Button Name="Ativo"  Content="Ativo" HorizontalAlignment="Left" Margin="65,45,0,0" VerticalAlignment="Top" Width="75" Click="Ativo_Click" /> -->
-        <!-- <Button Name="Todos" Content="Todos" HorizontalAlignment="Left" Margin="145,45,0,0" VerticalAlignment="Top" Width="75" Click="Todos_Click" /> -->
+        <DataGrid Name="operacoesDG" HorizontalAlignment="Left" Height="341" Margin="10,70,0,0" VerticalAlignment="Top" Width="774"/>
+        <ComboBox HorizontalAlignment="Left" Margin="149,24,0,0" VerticalAlignment="Top" Width="120" 
+                  ItemsSource="{Binding Source={local:EnumBindingSource {x:Type entity:FilterType}}}"
+                  Name="Agrupar" SelectionChanged="Agrupar_SelectionChanged" 
+                  />
+        <Label Content="Agrupar por" HorizontalAlignment="Left" Margin="52,21,0,0" VerticalAlignment="Top" Width="82"/>
+        <Button Name="BaixarCSV" Content="Baixar CSV" HorizontalAlignment="Left" Margin="613,24,0,0" VerticalAlignment="Top" Width="75" Click="BaixarCSV_Click"/>
+        <Button Name="BaixarExcel" Content="Baixar Excel" HorizontalAlignment="Left" Margin="709,24,0,0" VerticalAlignment="Top" Width="75" Click="BaixarExcel_Click"/>
 
     </Grid>
 

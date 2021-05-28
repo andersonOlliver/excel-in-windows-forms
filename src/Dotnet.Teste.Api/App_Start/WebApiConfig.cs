@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using Dotnet.Teste.Api.App_Start;
+﻿using Dotnet.Teste.Api.App_Start;
 using Dotnet.Teste.Api.Log;
+using System.Web.Http;
 
 namespace Dotnet.Teste.Api
 {
@@ -22,6 +19,8 @@ namespace Dotnet.Teste.Api
             formatters.Remove(formatters.XmlFormatter);
 
             config.MessageHandlers.Add(new MonitorLog());
+
+            BootStrapper.Init();
 
             SwaggerConfig.Register();
         }

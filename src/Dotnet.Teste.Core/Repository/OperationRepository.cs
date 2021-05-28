@@ -3,60 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using Dotnet.Teste.Core.Entity;
 using Dotnet.Teste.Core.Infra;
+using Dotnet.Teste.Core.Util;
 
 namespace Dotnet.Teste.Core.Repository
 {
-    public class OperationRepository
+    public class OperationRepository : IOperationRepository
     {
         private readonly FileData _fileData = new FileData();
+        private Dictionary<string, dynamic> _cache = new Dictionary<string, dynamic>();
 
-        public List<Operation> list()
+        public List<Operation> List()
         {
-            return _fileData.Read();
+            if (_cache.ContainsKey(Const.TODOS))
+            {
+                return _cache[Const.TODOS];
+            }
+            var result = _fileData.Read();
+            _cache.Add(Const.TODOS, result);
+            return result;
         }
 
-        public List<FilteredDto> GroupedBy(FilterType type)
+        public List<Grouped> GroupedBy(FilterType type)
         {
-            return Grouping(list(), type);
-
-            //     return (from collection in allData
-            //             group collection by new { collection.Ativo }
-            //         into ativos
-            //             select new FilteredDto()
-            //             {
-            //                 Nome = ativos.Key.Ativo,
-            //                 Quantidade = ativos.Count(),
-            //                 Soma = ativos.Sum(a => a.Quantidade * a.Preco)
-            //             }).ToList();
+            if (_cache.ContainsKey(type.ToString()))
+            {
+                return _cache[type.ToString()];
+            }
+            var result = Grouping(List(), type);
+            _cache[type.ToString()] = result;
+            return result;
         }
 
-        private List<FilteredDto> Grouping(IEnumerable<Operation> operations, FilterType type)
+        private List<Grouped> Grouping(IEnumerable<Operation> operations, FilterType type)
         {
             switch (type)
             {
                 case FilterType.ATIVO:
                     return operations.GroupBy(o => o.Ativo)
-                        .Select(e => new FilteredDto
+                        .Select(e => new Grouped
                         {
-                            Nome = e.Key,
+                            Valor = e.Key,
                             Quantidade = e.Count(),
                             Soma = e.Sum(a => a.Quantidade * a.Preco)
                         }).ToList();
 
                 case FilterType.TIPO_OPERACAO:
                     return operations.GroupBy(o => o.TipoOperacao)
-                        .Select(e => new FilteredDto
+                        .Select(e => new Grouped
                         {
-                            Nome = e.Key.ToString(),
+                            Valor = e.Key.ToString(),
                             Quantidade = e.Count(),
                             Soma = e.Sum(a => a.Quantidade * a.Preco)
                         }).ToList();
 
                 case FilterType.CONTA:
                     return operations.GroupBy(o => o.Conta)
-                        .Select(e => new FilteredDto()
+                        .Select(e => new Grouped()
                         {
-                            Nome = e.Key.ToString(),
+                            Valor = e.Key.ToString(),
                             Quantidade = e.Count(),
                             Soma = e.Sum(a => a.Quantidade * a.Preco)
 
