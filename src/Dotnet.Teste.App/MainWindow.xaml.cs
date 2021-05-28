@@ -44,7 +44,7 @@ namespace Dotnet.Teste.App
             {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Filter = "CSV file (*.csv)|*.csv| All Files (*.*)|*.*",
-                FileName = "arquivo.csv"
+                FileName = $"{groupBy}.csv"
             };
 
             if (exportDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
